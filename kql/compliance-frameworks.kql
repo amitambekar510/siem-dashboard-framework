@@ -1,0 +1,12 @@
+// ISO 27001 A.9 access control
+auditd.log.EUID: "0" AND NOT auditd.log.AUID: "0"
+// ISO 27001 A.6 HR security
+winlog.event_id: (4720 OR 4726 OR 4732 OR 4756)
+// PCI-DSS Req 1 firewall rule changes
+winlog.event_id: (4946 OR 4947 OR 4948 OR 4719)
+// PCI-DSS Req 8 shared accounts
+auditd.log.AUID: "4294967295"
+// GDPR Art.35 DPIA evidence
+auditd.log.key: DPIA_*
+// SEBI CCMP crisis triggers
+(auditd.log.success: "no" AND auditd.log.EUID: "0") OR winlog.event_id: 1102
