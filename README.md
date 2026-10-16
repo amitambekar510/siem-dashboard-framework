@@ -226,6 +226,6 @@ All screenshots in `assets/` are **synthetic demos** and carry a watermark. No r
 
 ## 👤 Author
 
-**Amit Ambekar**, SOC Analyst, Mumbai · [@amitambekar510](https://github.com/amitambekar510)
+**Amit Ambekar**, SOC Team Lead, Mumbai · [@amitambekar510](https://github.com/amitambekar510)
 
 <div align="center"><sub>If this helped your SOC, give it a ⭐</sub></div>
