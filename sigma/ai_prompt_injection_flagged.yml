@@ -1,0 +1,24 @@
+title: AI Prompt Injection or Jailbreak Flagged
+id: ff7dcab2-c1e4-5431-92ad-d3689925dcf3
+status: experimental
+description: Guardrail flagged or blocked a prompt-injection or jailbreak attempt
+author: Amit Ambekar
+date: 2026/10/20
+tags:
+    - compliance.iso27090
+    - compliance.iso42001
+logsource:
+    product: ai
+    service: gateway
+detection:
+    selection:
+        ai.guardrail.category:
+            - prompt_injection
+            - jailbreak
+        ai.guardrail.action:
+            - block
+            - flag
+    condition: selection
+falsepositives:
+    - Authorised red-team or guardrail testing
+level: medium

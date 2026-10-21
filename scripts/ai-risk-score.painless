@@ -1,0 +1,26 @@
+// Runtime field: ai.risk.score (type: long). Add alongside risk.score
+int score = 0;
+boolean hasPipeline = doc.containsKey('ai.pipeline.id') && doc['ai.pipeline.id'].size() > 0;
+
+if (doc.containsKey('ai.guardrail.category') && doc['ai.guardrail.category'].size() > 0) {
+  String c = doc['ai.guardrail.category'].value;
+  String a = 'allow';
+  if (doc.containsKey('ai.guardrail.action') && doc['ai.guardrail.action'].size() > 0) {
+    a = doc['ai.guardrail.action'].value;
+  }
+  if (c.equals('prompt_injection') || c.equals('jailbreak')) { score += 6; }
+  if (c.equals('pii') || c.equals('secrets')) { score += 8; }
+  if (c.equals('output_injection')) { score += 6; }
+  if (a.equals('block')) { score += 1; }
+}
+if (doc.containsKey('ai.artifact.operation') && doc['ai.artifact.operation'].size() > 0) {
+  String o = doc['ai.artifact.operation'].value;
+  if (!hasPipeline && (o.equals('modify') || o.equals('promote') || o.equals('delete'))) { score += 9; }
+}
+if (doc.containsKey('ai.data.operation') && doc['ai.data.operation'].size() > 0) {
+  String o2 = doc['ai.data.operation'].value;
+  if (!hasPipeline && (o2.equals('write') || o2.equals('delete'))) { score += 8; }
+}
+if (doc.containsKey('ai.shadow.detected') && doc['ai.shadow.detected'].size() > 0 && doc['ai.shadow.detected'].value) { score += 4; }
+if (doc.containsKey('ai.tool.outcome') && doc['ai.tool.outcome'].size() > 0 && doc['ai.tool.outcome'].value.equals('denied')) { score += 3; }
+emit(score);

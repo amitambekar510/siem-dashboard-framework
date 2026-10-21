@@ -1,0 +1,8 @@
+// Single-window hunt (host + AI)
+(auditd.log.EUID: "0" AND auditd.log.success: "no")
+OR winlog.event_id: (1102 OR 4732 OR 4756 OR 7045 OR 4698)
+OR (event.outcome: "failure" AND rule.name: *)
+OR auditd.log.AUID: "4294967295"
+OR auditd.log.key: DPIA_*
+OR (ai.artifact.operation: ("modify" OR "promote") AND NOT ai.pipeline.id: *)
+OR ai.guardrail.category: ("pii" OR "secrets")

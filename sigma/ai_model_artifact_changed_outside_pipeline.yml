@@ -1,0 +1,25 @@
+title: AI Model Artifact Changed Outside Approved Pipeline
+id: d67f391c-b563-540b-9886-921b66c74dd1
+status: experimental
+description: Model modified, promoted or deleted without an approved pipeline identity
+author: Amit Ambekar
+date: 2026/10/20
+tags:
+    - compliance.iso27090
+    - compliance.iso42001
+logsource:
+    product: ai
+    service: registry
+detection:
+    selection:
+        ai.artifact.type: model
+        ai.artifact.operation:
+            - modify
+            - promote
+            - delete
+    filter:
+        ai.pipeline.id|exists: true
+    condition: selection and not filter
+falsepositives:
+    - Authorised red-team or guardrail testing
+level: high
