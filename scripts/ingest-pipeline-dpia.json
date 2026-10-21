@@ -1,9 +1,0 @@
-{
-  "description": "Tag DPIA-relevant auditd events",
-  "processors": [
-    { "set": { "field": "dpia.category", "value": "PII_ACCESS",
-        "if": "ctx.auditd?.log?.key != null && ctx.auditd.log.key.startsWith('DPIA_')" } },
-    { "set": { "field": "dpia.framework", "value": "GDPR_Art35",
-        "if": "ctx.dpia?.category != null" } }
-  ]
-}
