@@ -1,4 +1,0 @@
-## Replace paths with your own sensitive locations
--w /var/data/customer/ -p rwxa -k DPIA_PII_ACCESS
--w /etc/mysql/ -p rwa -k DPIA_DB_CONFIG
--w /home/ -p rwxa -k DPIA_USER_DATA
