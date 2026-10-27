@@ -1,0 +1,28 @@
+{
+  "description": "Flag proxy/DNS events that reach generative-AI services. Maintain the domain lists; move approved services into 'sanctioned'.",
+  "processors": [
+    {
+      "script": {
+        "lang": "painless",
+        "source": "if (ctx.url == null || ctx.url.domain == null) { return; }\nString d = ctx.url.domain.toLowerCase();\nfor (String x : params.domains) {\n  if (d.equals(x) || d.endsWith('.' + x)) {\n    if (params.sanctioned.contains(x)) { return; }\n    if (ctx.ai == null) { ctx.ai = new HashMap(); }\n    if (ctx.ai.shadow == null) { ctx.ai.shadow = new HashMap(); }\n    ctx.ai.shadow.detected = true;\n    ctx.ai.shadow.service = x;\n    return;\n  }\n}",
+        "params": {
+          "domains": [
+            "api.openai.com",
+            "chat.openai.com",
+            "chatgpt.com",
+            "claude.ai",
+            "api.anthropic.com",
+            "gemini.google.com",
+            "generativelanguage.googleapis.com",
+            "copilot.microsoft.com",
+            "perplexity.ai",
+            "huggingface.co",
+            "api.mistral.ai",
+            "api.cohere.com"
+          ],
+          "sanctioned": []
+        }
+      }
+    }
+  ]
+}

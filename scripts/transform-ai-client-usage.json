@@ -1,0 +1,76 @@
+{
+  "description": "Per-client hourly AI usage profile: model-extraction signal (volume + prompt diversity)",
+  "source": {
+    "index": [
+      "logs-ai*"
+    ],
+    "query": {
+      "term": {
+        "ai.request.type": "inference"
+      }
+    }
+  },
+  "dest": {
+    "index": "ai-client-usage"
+  },
+  "pivot": {
+    "group_by": {
+      "client": {
+        "terms": {
+          "field": "ai.request.client_id"
+        }
+      },
+      "system": {
+        "terms": {
+          "field": "ai.system.name"
+        }
+      },
+      "hour": {
+        "date_histogram": {
+          "field": "@timestamp",
+          "fixed_interval": "1h"
+        }
+      }
+    },
+    "aggregations": {
+      "requests": {
+        "value_count": {
+          "field": "ai.request.id"
+        }
+      },
+      "unique_prompts": {
+        "cardinality": {
+          "field": "ai.request.prompt_hash"
+        }
+      },
+      "tokens_out": {
+        "sum": {
+          "field": "ai.request.tokens_out"
+        }
+      },
+      "blocked": {
+        "filter": {
+          "term": {
+            "ai.guardrail.action": "block"
+          }
+        }
+      },
+      "diversity_ratio": {
+        "bucket_script": {
+          "buckets_path": {
+            "u": "unique_prompts",
+            "r": "requests"
+          },
+          "script": "params.r > 0 ? params.u / params.r : 0"
+        }
+      }
+    }
+  },
+  "sync": {
+    "time": {
+      "field": "@timestamp",
+      "delay": "60s"
+    }
+  },
+  "frequency": "1m"
+}

@@ -1,0 +1,25 @@
+// ISO/IEC 27090 aligned queries (custom ai.* schema, see docs/ai-telemetry-schema.md)
+
+// Prompt injection / jailbreak attempts
+ai.guardrail.category: ("prompt_injection" OR "jailbreak")
+
+// Sensitive data in model output
+ai.guardrail.category: ("pii" OR "secrets") AND ai.guardrail.action: ("redact" OR "flag" OR "block")
+
+// Model artifact changed outside the approved pipeline
+ai.artifact.type: "model" AND ai.artifact.operation: ("modify" OR "promote" OR "delete") AND NOT ai.pipeline.id: *
+
+// Training data written or deleted outside the approved pipeline
+ai.data.operation: ("write" OR "delete") AND NOT ai.pipeline.id: *
+
+// Agent tool calls denied
+ai.tool.outcome: "denied"
+
+// Quota / rate-limit pressure (limiting model use)
+ai.guardrail.category: "policy" AND ai.guardrail.action: "block"
+
+// Shadow AI (ISO/IEC 42001 use of AI systems)
+ai.shadow.detected: true
+
+// Model-extraction suspects: run on the ai-client-usage transform index
+// requests > 5000 AND diversity_ratio > 0.8

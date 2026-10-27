@@ -1,0 +1,75 @@
+{
+  "description": "Assured-zero: per host and day, count expected-source inventory docs, Security-channel canary events and Event 1102 clears. Silent hosts still appear because of the inventory docs.",
+  "source": {
+    "index": [
+      "logs-*",
+      "winlogbeat-*",
+      "siem-expected-sources"
+    ],
+    "query": {
+      "bool": {
+        "should": [
+          {
+            "term": {
+              "winlog.channel": "Security"
+            }
+          },
+          {
+            "term": {
+              "siem.expected_source": true
+            }
+          }
+        ],
+        "minimum_should_match": 1
+      }
+    }
+  },
+  "dest": {
+    "index": "assured-zero-clear-events"
+  },
+  "pivot": {
+    "group_by": {
+      "host": {
+        "terms": {
+          "field": "host.name"
+        }
+      },
+      "day": {
+        "date_histogram": {
+          "field": "@timestamp",
+          "fixed_interval": "1d"
+        }
+      }
+    },
+    "aggregations": {
+      "expected": {
+        "filter": {
+          "term": {
+            "siem.expected_source": true
+          }
+        }
+      },
+      "canary_events": {
+        "filter": {
+          "term": {
+            "winlog.channel": "Security"
+          }
+        }
+      },
+      "clear_events": {
+        "filter": {
+          "term": {
+            "winlog.event_id": 1102
+          }
+        }
+      }
+    }
+  },
+  "sync": {
+    "time": {
+      "field": "@timestamp",
+      "delay": "60s"
+    }
+  },
+  "frequency": "5m"
+}

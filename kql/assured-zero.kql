@@ -1,0 +1,32 @@
+// Assured zero: every must-be-0 check needs a TARGET query and a CANARY query.
+// Verdict: target > 0 -> ALERT; target = 0 and canary fresh and all expected sources reporting -> ASSURED; otherwise UNVERIFIED.
+
+// --- Windows Security log cleared
+// target
+winlog.event_id: 1102
+// canary
+winlog.channel: "Security"
+
+// --- Windows System log cleared (verify event id in your environment)
+// target
+winlog.event_id: 104
+// canary
+winlog.channel: "System"
+
+// --- AI: prompt injection / jailbreak
+// target
+ai.guardrail.category: ("prompt_injection" OR "jailbreak")
+// canary
+ai.request.id: *
+
+// --- AI: model changed outside approved pipeline
+// target
+ai.artifact.type: "model" AND ai.artifact.operation: ("modify" OR "promote" OR "delete") AND NOT ai.pipeline.id: *
+// canary
+ai.artifact.type: "model"
+
+// --- AI: dataset written outside approved pipeline
+// target
+ai.data.operation: ("write" OR "delete") AND NOT ai.pipeline.id: *
+// canary
+ai.data.operation: *

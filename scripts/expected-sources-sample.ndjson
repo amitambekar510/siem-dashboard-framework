@@ -1,0 +1,6 @@
+{"index": {"_index": "siem-expected-sources"}}
+{"@timestamp": "2026-10-27T00:00:00Z", "host": {"name": "srv-app-01"}, "siem": {"expected_source": true, "scope": "windows-security", "owner": "it-ops"}}
+{"index": {"_index": "siem-expected-sources"}}
+{"@timestamp": "2026-10-27T00:00:00Z", "host": {"name": "srv-db-02"}, "siem": {"expected_source": true, "scope": "windows-security", "owner": "it-ops"}}
+{"index": {"_index": "siem-expected-sources"}}
+{"@timestamp": "2026-10-27T00:00:00Z", "host": {"name": "wks-114"}, "siem": {"expected_source": true, "scope": "windows-security", "owner": "it-ops"}}

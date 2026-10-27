@@ -1,0 +1,13 @@
+{
+  "source": { "index": ["logs-*"] },
+  "dest": { "index": "risk-scores-by-host" },
+  "pivot": {
+    "group_by": { "host.name": { "terms": { "field": "host.name" } } },
+    "aggregations": {
+      "events": { "value_count": { "field": "@timestamp" } },
+      "last_seen": { "max": { "field": "@timestamp" } }
+    }
+  },
+  "sync": { "time": { "field": "@timestamp", "delay": "60s" } },
+  "frequency": "1m"
+}
